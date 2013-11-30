@@ -1,0 +1,165 @@
+buildscript {
+	repositories { mavenCentral() }
+	dependencies { classpath 'com.android.tools.build:gradle:0.5.+' }
+}
+
+
+allprojects {
+	version = '0.5.9'
+	ext.appName = 'vtm'
+	ext.gdxVersion = '1.0-SNAPSHOT'
+
+	repositories {
+		mavenCentral()
+		maven { url 'https://oss.sonatype.org/content/repositories/snapshots/' }
+		mavenLocal();
+	}
+}
+
+subprojects {
+	apply plugin: 'eclipse'
+	apply plugin: 'idea'
+}
+
+project(':vtm') {
+	apply plugin: 'java'
+
+	sourceCompatibility = 1.6
+	targetCompatibility = 1.6
+
+	configurations{ provided }
+
+	dependencies {
+		//provided files('../vtm-ext-libs/findbugs/annotations.jar')
+		provided 'org.slf4j:slf4j-api:1.7.5'
+		provided 'com.google.code.findbugs:annotations:2.0.1'
+	}
+
+	sourceSets {
+		main.java.srcDirs = ['src']
+		main.resources.srcDirs = ['src']
+		main.compileClasspath += configurations.provided
+	}
+}
+
+project(':vtm-gdx') {
+	apply plugin: 'java'
+
+	sourceSets {
+		main.java.srcDirs = ['src']
+		main.resources.srcDirs = ['src']
+	}
+
+	dependencies {
+		compile project(':vtm')
+		compile "com.badlogicgames.gdx:gdx:$gdxVersion"
+	}
+}
+
+project(':vtm-gdx-desktop') {
+	apply plugin: 'java'
+	apply plugin: 'application'
+
+	sourceCompatibility = 1.6
+	mainClassName = 'org.oscim.gdx.GdxMapApp'
+
+	sourceSets {
+		main.java.srcDirs = ['src']
+		main.resources.srcDirs = ['src']
+
+		main.resources.srcDirs = [
+			file('../vtm/assets').getAbsolutePath()
+		]
+		output.resourcesDir = 'assets'
+	}
+
+	run { ignoreExitValue = true }
+
+	dependencies {
+		compile project(':vtm-gdx')
+		// compile "com.badlogicgames.gdx:gdx-backend-lwjgl:$gdxVersion"
+
+		compile files('../vtm-ext-libs/gdx/gdx-backend-lwjgl.jar')
+		compile files('../vtm-ext-libs/gdx/gdx-backend-lwjgl-natives.jar')
+		compile files('../vtm-ext-libs/gdx/vtm-jni-natives.jar')
+		compile "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-desktop"
+		compile 'org.slf4j:slf4j-api:1.7.5'
+		compile 'org.slf4j:slf4j-simple:1.7.5'
+	}
+}
+
+project (':vtm-android'){
+	apply plugin: 'android-library'
+
+	//configurations.all*.exclude module: 'slf4j-api'
+	//configurations.all*.exclude module: 'annotations'
+
+	dependencies {
+		//compile files('../vtm-ext-libs/findbugs/annotations.jar')
+		//compile fileTree(dir: 'libs', include: '*.jar')
+		//compile project(':vtm')
+		compile files('../vtm-ext-libs/libs/slf4j-android-1.6.1-RC1.jar')
+		compile 'com.google.code.findbugs:annotations:2.0.1'
+	}
+
+	android {
+		compileSdkVersion 17
+		buildToolsVersion '17.0.0'
+
+		sourceSets {
+			main {
+				manifest.srcFile 'AndroidManifest.xml'
+				// classes using 'annotations' get messed up when
+				// compiled as java project:
+				// 'bad class file magic (cafebabe) or version (0033.0000)' ?
+				java.srcDirs = ['src', '../vtm/src']
+				//java.srcDirs = ['src']
+				resources.srcDirs = ['src']
+				aidl.srcDirs = ['src']
+				renderscript.srcDirs = ['src']
+				res.srcDirs = ['res']
+				assets.srcDirs = ['assets']
+			}
+
+			debug.setRoot('build-types/debug')
+			//release.setRoot('build-types/release')
+		}
+	}
+}
+
+project (':vtm-android-example'){
+	apply plugin: 'android'
+
+	//configurations.all*.exclude module: 'slf4j-api'
+	//configurations.all*.exclude module: 'annotations'
+
+	tasks.withType(com.android.build.gradle.tasks.PackageApplication) { pkgTask ->
+		pkgTask.jniDir new File(projectDir, '../vtm-ext-libs/vtm-android')
+	}
+
+	dependencies {
+		compile fileTree(dir: 'libs', include: '*.jar')
+		//compile project(':vtm')
+		compile project(':vtm-android')
+	}
+
+	android {
+		compileSdkVersion 17
+		buildToolsVersion '17.0.0'
+
+		sourceSets {
+			main {
+				manifest.srcFile 'AndroidManifest.xml'
+				java.srcDirs = ['src', 'assets']
+				resources.srcDirs = ['src', 'assets']
+				aidl.srcDirs = ['src', 'assets']
+				renderscript.srcDirs = ['src', 'assets']
+				res.srcDirs = ['res']
+				assets.srcDirs = ['../vtm/assets']
+			}
+
+			debug.setRoot('build-types/debug')
+			// release.setRoot('build-types/release')
+		}
+	}
+}

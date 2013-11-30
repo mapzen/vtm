@@ -1,6 +1,8 @@
 */bin/*
 */gen/*
 */obj/*
+*/build/*
+/.gradle/
 target/
 *.o
 *.so
