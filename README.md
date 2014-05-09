@@ -4,6 +4,11 @@
 
 VTM is developed within the [OpenScienceMap](http://opensciencemap.org) project.
 
+[![Circle CI Build Status](https://circleci.com/gh/mapzen/vtm.png?circle-token=77e30d9cdbb19cf7006c66a88efe6a5d727b3cb3)](https://circleci.com/gh/mapzen/vtm)
+
+http://www.opensciencemap.org<br/>
+VTM is part of the OpenScienceMap project and developed at University of Bremen.
+
 ## Features
 - Java map library
 - OpenGL vector-tile rendering
