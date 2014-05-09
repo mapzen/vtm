@@ -21,7 +21,7 @@ dependencies {
   //compile 'org.oscim:vtm:0.5.9-SNAPSHOT'
   compile project(':vtm')
 
-  compile 'com.android.support:support-v4:19.1.0'
+  compile 'com.android.support:support-v4:19.1'
 
   // -> might be more efficient, but configuring
   // log-levels is way too complicated...

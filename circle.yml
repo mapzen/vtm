@@ -1,0 +1,8 @@
+machine:
+  environment:
+    ANDROID_HOME: /usr/local/android-sdk-linux
+
+dependencies:
+  pre:
+    - echo y | android update sdk --all --no-ui --force --filter "build-tools-19.0.3,platform-tools,android-18,addon-google_apis-google-18,android-19,extra-android-m2repository"
+    - wget https://gist.githubusercontent.com/baldur/941d72c6eec648d0d157/raw/ae0ff6857cc393676f7a78c948446f3cbbbbf28c/install-support-jar.sh; bash install-support-jar.sh 19.1
