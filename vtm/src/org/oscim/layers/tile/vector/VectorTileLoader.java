@@ -82,8 +82,13 @@ public class VectorTileLoader extends TileLoader implements IRenderTheme.Callbac
 
 	@Override
 	public void cleanup() {
-		if (mTileDataSource != null)
-			mTileDataSource.destroy();
+		new Thread(new Runnable() {
+			@Override
+			public void run() {
+				if (mTileDataSource != null)
+					mTileDataSource.destroy();
+			}
+		}).start();
 	}
 
 	@Override
