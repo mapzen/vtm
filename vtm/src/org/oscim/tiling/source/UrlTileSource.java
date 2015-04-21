@@ -32,6 +32,7 @@ public abstract class UrlTileSource extends TileSource {
 		protected String tilePath;
 		protected String url;
 		private HttpEngine.Factory engineFactory;
+		private String apiKey;
 
 		protected Builder() {
 
@@ -68,6 +69,7 @@ public abstract class UrlTileSource extends TileSource {
 	private HttpEngine.Factory mHttpFactory;
 	private Map<String, String> mRequestHeaders = Collections.emptyMap();
 	private TileUrlFormatter mTileUrlFormatter = URL_FORMATTER;
+	private String apiKey;
 
 	public interface TileUrlFormatter {
 		public String formatTilePath(UrlTileSource tileSource, Tile tile);
@@ -111,8 +113,16 @@ public abstract class UrlTileSource extends TileSource {
 		return mUrl;
 	}
 
+	public void setApiKey(String apiKey) {
+		this.apiKey = apiKey;
+	}
+
 	public String getTileUrl(Tile tile) {
-		return mUrl + mTileUrlFormatter.formatTilePath(this, tile);
+		String tileUrl = mUrl + mTileUrlFormatter.formatTilePath(this, tile);
+		if (apiKey != null) {
+			tileUrl += String.format("?api_key=%s", apiKey);
+		}
+		return tileUrl;
 	}
 
 	public void setHttpEngine(HttpEngine.Factory httpFactory) {

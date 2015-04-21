@@ -4,7 +4,11 @@ import static org.fest.assertions.api.Assertions.assertThat;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.oscim.core.Tile;
 import org.oscim.tiling.ITileDataSource;
+
+import java.lang.Exception;
+import java.lang.Integer;
 
 public class UrlTileSourceTest {
 	private UrlTileSource tileSource;
@@ -30,6 +34,12 @@ public class UrlTileSourceTest {
 		tileSource.setHttpEngine(new OkHttpEngine.OkHttpFactory());
 		TestTileDataSource dataSource = (TestTileDataSource) tileSource.getDataSource();
 		assertThat(dataSource.getConnection()).isInstanceOf(OkHttpEngine.class);
+	}
+
+	@Test
+	public void setApiKey_shouldAppendQueryString() throws Exception {
+		tileSource.setApiKey("test123");
+		assertThat(tileSource.getTileUrl(new Tile(0, 0, (byte) 0))).endsWith("?api_key=test123");
 	}
 
 	class TestTileSource extends UrlTileSource {
